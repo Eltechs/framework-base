@@ -1,0 +1,33 @@
+diff --git a/cmds/app_process/app_main.cpp b/cmds/app_process/app_main.cpp
+index 0ea141c..e92b864 100644
+--- a/cmds/app_process/app_main.cpp
++++ b/cmds/app_process/app_main.cpp
+@@ -265,6 +265,7 @@ int main(int argc, char* const argv[])
+     bool application = false;
+     String8 niceName;
+     String8 className;
++    String8 abilistPropName;
+ 
+     ++i;  // Skip unused "parent dir" argument.
+     while (i < argc) {
+@@ -278,6 +279,8 @@ int main(int argc, char* const argv[])
+             application = true;
+         } else if (strncmp(arg, "--nice-name=", 12) == 0) {
+             niceName.setTo(arg + 12);
++        } else if (strncmp(arg, "--abi-list-prop-name=", 21 ) == 0 ) {
++            abilistPropName.setTo(arg + 21);
+         } else if (strncmp(arg, "--", 2) != 0) {
+             className.setTo(arg);
+             break;
+@@ -317,7 +320,10 @@ int main(int argc, char* const argv[])
+         }
+ 
+         char prop[PROP_VALUE_MAX];
+-        if (property_get(ABI_LIST_PROPERTY, prop, NULL) == 0) {
++
++        const char * abilistPropNameFinal = abilistPropName.isEmpty() ? ABI_LIST_PROPERTY : abilistPropName.string();
++
++        if (property_get(abilistPropNameFinal, prop, NULL) == 0) {
+             LOG_ALWAYS_FATAL("app_process: Unable to determine ABI list from property %s.",
+                 ABI_LIST_PROPERTY);
+             return 11;
